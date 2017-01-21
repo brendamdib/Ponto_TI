@@ -1,0 +1,21 @@
+﻿body {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+table {
+ 
+    margin:auto;   
+    width:auto;        
+}
+
+button{
+    position:relative,center;   
+}
+
+td#botao{
+    text-align:center;
+}
+
+label#mensagem{
+    text-align:center;
+}
