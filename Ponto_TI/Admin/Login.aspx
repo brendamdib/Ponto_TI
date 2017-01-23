@@ -23,7 +23,7 @@
                 </tr>
                 <tr>
                     <td>Senha:</td>
-                    <td><asp:TextBox ID="txt_senha" runat="server" TextMode="Password" Width="150" MaxLength="6"></asp:TextBox></td>
+                    <td><asp:TextBox ID="txt_senha" runat="server" TextMode="Password" Width="150" MaxLength="10"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td colspan="2">

@@ -17,9 +17,9 @@ namespace Ponto_TI.scripts
         private string uid;
         private string password;
         private StreamWriter Arqlog;
-        public string Valor;
-        public int ContColab;
-
+        public string Valor, StatusLogin;
+        public int ContColab, IdUsuario, IdGrupoUsuario, ContLogin;
+        
         public void Conecta_MySql()
         {
             Inicializa();
@@ -159,6 +159,53 @@ namespace Ponto_TI.scripts
 
                     //Fecha Conexão com Banco de Dados
                     this.FechaConexao();
+            }
+        }
+
+        //Select CPF
+        public void SelectLogin(string login, string senha)
+        {
+            //String para pesquisa
+            string query = "SELECT DISTINCT login_id, login_grupo FROM tbl_login WHERE login_username='" + login + "' AND login_senha= '" + senha + "'";
+
+
+            //Criando Lista para Armazenar os Dados do Select
+
+            List<int>[] Lista = new List<int>[2];
+            Lista[0] = new List<int>();
+            Lista[1] = new List<int>();
+
+            if (this.AbreConexao() == true)
+            {
+                //Cria Comando
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Criando o data Reader
+                MySqlDataReader MySQL_DR = cmd.ExecuteReader();
+
+                DataTable DtColab = new DataTable();
+                DtColab.Load(MySQL_DR);
+                ContLogin = DtColab.Rows.Count;
+                IdUsuario = DtColab.Rows[0].Field<Int32>("login_id");
+                IdGrupoUsuario = DtColab.Rows[0].Field<Int32>("login_grupo");
+
+                DtColab.Clear();
+
+                if (ContLogin != 1)
+                {
+                    StatusLogin = "Erro";
+                }
+                else
+                {
+                    StatusLogin = "Sucesso";
+                }
+
+
+                //Fecha Data Reader
+                MySQL_DR.Close();
+
+                //Fecha Conexão com Banco de Dados
+                this.FechaConexao();
             }
         }
 
