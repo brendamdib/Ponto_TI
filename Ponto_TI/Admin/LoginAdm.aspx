@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="Ponto_TI.Admin.Login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LoginAdm.aspx.cs" Inherits="Ponto_TI.Admin.Login" %>
 
 <!DOCTYPE html>
 
@@ -18,12 +18,12 @@
                 <tr>
                     <td>Login:</td>
                     <td>
-                        <asp:TextBox ID="txt_login" runat="server" Width="150" MaxLength="20"></asp:TextBox>
+                        <asp:TextBox ID="txt_adm_login" runat="server" Width="150" MaxLength="20"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>
                     <td>Senha:</td>
-                    <td><asp:TextBox ID="txt_senha" runat="server" TextMode="Password" Width="150" MaxLength="10"></asp:TextBox></td>
+                    <td><asp:TextBox ID="txt_adm_senha" runat="server" TextMode="Password" Width="150" MaxLength="10"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -31,12 +31,12 @@
                 </tr>
                 <tr>
                     <td colspan="2" id="botao">
-                        <asp:Button ID="btn_submit" runat="server" Text="Acessar" OnClick="btn_submit_Click" />
+                        <asp:Button ID="btn_adm_submit" runat="server" Text="Acessar" OnClick="btn_submit_Click" />
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <asp:Label ID="lbl_mensagem" runat="server" Text=""></asp:Label>
+                        <asp:Label ID="lbl_adm_mensagem" runat="server" Text=""></asp:Label>
                     </td>
                 </tr>
             </table>

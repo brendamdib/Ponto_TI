@@ -11,7 +11,7 @@ namespace Ponto_TI.Admin
 {
 
 
-    public partial class Relatorios
+    public partial class IndexAdm
     {
     }
 }

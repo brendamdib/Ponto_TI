@@ -183,13 +183,9 @@ namespace Ponto_TI.scripts
                 //Criando o data Reader
                 MySqlDataReader MySQL_DR = cmd.ExecuteReader();
 
-                DataTable DtColab = new DataTable();
-                DtColab.Load(MySQL_DR);
-                ContLogin = DtColab.Rows.Count;
-                IdUsuario = DtColab.Rows[0].Field<Int32>("login_id");
-                IdGrupoUsuario = DtColab.Rows[0].Field<Int32>("login_grupo");
-
-                DtColab.Clear();
+                DataTable DtLogin = new DataTable();
+                DtLogin.Load(MySQL_DR);
+                ContLogin = DtLogin.Rows.Count;
 
                 if (ContLogin != 1)
                 {
@@ -197,7 +193,10 @@ namespace Ponto_TI.scripts
                 }
                 else
                 {
+                    IdUsuario = DtLogin.Rows[0].Field<Int32>("login_id");
+                    IdGrupoUsuario = DtLogin.Rows[0].Field<Int32>("login_grupo");
                     StatusLogin = "Sucesso";
+                    DtLogin.Clear();
                 }
 
 

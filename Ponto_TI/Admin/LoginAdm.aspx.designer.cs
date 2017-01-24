@@ -22,39 +22,39 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.HtmlControls.HtmlForm frm_login;
         
         /// <summary>
-        /// txt_login control.
+        /// txt_adm_login control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_login;
+        protected global::System.Web.UI.WebControls.TextBox txt_adm_login;
         
         /// <summary>
-        /// txt_senha control.
+        /// txt_adm_senha control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txt_senha;
+        protected global::System.Web.UI.WebControls.TextBox txt_adm_senha;
         
         /// <summary>
-        /// btn_submit control.
+        /// btn_adm_submit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn_submit;
+        protected global::System.Web.UI.WebControls.Button btn_adm_submit;
         
         /// <summary>
-        /// lbl_mensagem control.
+        /// lbl_adm_mensagem control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_mensagem;
+        protected global::System.Web.UI.WebControls.Label lbl_adm_mensagem;
     }
 }

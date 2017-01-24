@@ -31,6 +31,24 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.HtmlControls.HtmlForm frm_master;
         
         /// <summary>
+        /// img_gnclogo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image img_gnclogo;
+        
+        /// <summary>
+        /// nav_menu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Menu nav_menu;
+        
+        /// <summary>
         /// ContentPlaceHolder1 control.
         /// </summary>
         /// <remarks>

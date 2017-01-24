@@ -12,16 +12,18 @@ namespace Ponto_TI.Admin
 {
     public partial class Login : System.Web.UI.Page
     {
+        public string Status;
+
         protected void Page_Load(object sender, EventArgs e)
-        {
-            txt_login.Focus();
+        {       
+            txt_adm_login.Focus();
         }
 
         protected void btn_submit_Click(object sender, EventArgs e)
         {   
             scripts.Funcoes Conecta = new scripts.Funcoes();
             Conecta.Conecta_MySql();
-            Conecta.SelectLogin(txt_login.Text, txt_senha.Text);
+            Conecta.SelectLogin(txt_adm_login.Text, txt_adm_senha.Text);
             //Response.Write(Conecta.Valor.ToString());
 
             if (Conecta.StatusLogin.ToString() == "Erro")
@@ -30,7 +32,8 @@ namespace Ponto_TI.Admin
             }
             else
             {
-            Response.Redirect("relatorios.aspx");
+                Application["LoginStatus"] = Conecta.StatusLogin.ToString();        
+                Response.Redirect("indexAdm.aspx");
             }                     
         }
     }
