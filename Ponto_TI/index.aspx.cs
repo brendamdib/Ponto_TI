@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
-using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
 
 namespace Ponto_TI
@@ -28,7 +27,7 @@ namespace Ponto_TI
             if (scripts.Funcoes.IsCpf(cpf))
             {   
                 scripts.Funcoes Conecta = new scripts.Funcoes();
-                Conecta.Conecta_MySql();
+                Conecta.Conecta_Oracle();
                 Conecta.SelectCPF(cpf);
                 //Response.Write(Conecta.Valor.ToString());
 

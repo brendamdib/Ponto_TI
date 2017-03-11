@@ -4,23 +4,37 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.IO;
-using MySql.Data.MySqlClient;
+using System.Web.UI;
+using System.Net.NetworkInformation;
+//using System.Data.OracleClient;
+using Oracle.DataAccess.Client;
 
 namespace Ponto_TI.scripts
 {
     public class Funcoes
     {
         //declaração de variáveis
-        private MySqlConnection connection;
-        private string server;
-        private string database;
+        private OracleConnection connection;
+        private string datasource;
+        //private string database;
         private string uid;
         private string password;
         private StreamWriter Arqlog;
         public string Valor, StatusLogin;
         public int ContColab, IdUsuario, IdGrupoUsuario, ContLogin;
-        
-        public void Conecta_MySql()
+        public string strIdUsuario, strIdGrupoUsuario;
+                
+        public string GravaIP()
+        {
+
+            string IPAddress = HttpContext.Current.Request.UserHostAddress;
+            string Hostname = HttpContext.Current.Request.UserHostName;
+            Hostname = System.Environment.MachineName;            
+            return IPAddress;
+
+        }
+
+        public void Conecta_Oracle()
         {
             Inicializa();
         }
@@ -29,15 +43,16 @@ namespace Ponto_TI.scripts
         {
             /*Atribuindo valores às variáveis que irão definir a string de conexão e cria 
             arquivo de log*/
-        
-            server = "localhost";
-            database = "gnc_ponto_ti";
-            uid = "root";
-            password = "monteiro1982";
-            string connectionString;
-            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-            connection = new MySqlConnection(connectionString);
+            
+            datasource = "(DESCRIPTION =  (ADDRESS = (PROTOCOL = tcp)(HOST = sales - server)(PORT = 1521))  (CONNECT_DATA =(SERVICE_NAME = sales.us.acme.com)))";
+            //database = "PRODGNC";
+            uid = "teste";
+            password = "teste";
+            string ConnStr;            
+            ConnStr = "Data Source=//10.200.1.201:1521/PRODGNC;User ID=" + uid + ";Password = "+ password +"";
+            //connection.ConnectionString = ConnStr;
+            connection = new OracleConnection(ConnStr);          
+            
 
             CriaLog();
         }
@@ -47,9 +62,9 @@ namespace Ponto_TI.scripts
             //Criando Arquivo de Log
             using (Arqlog = File.AppendText("D:\\log.txt"))
             {
-                Arqlog.WriteLine("Conexão com Banco de Dados MySQL ");
+                Arqlog.WriteLine("Conexão com Banco de Dados Oracle ");
                 Arqlog.WriteLine("==============================================");
-                Arqlog.WriteLine("Data/Hora:" + DateTime.Now.ToString());
+                Arqlog.WriteLine("Data/Hora:" + DateTime.Now.ToString());               
             }
         }
 
@@ -58,8 +73,7 @@ namespace Ponto_TI.scripts
             Escrita.WriteLine(Mensagem);
         }
 
-
-        //Abre a Conexão com o Banco de Dados MySQL
+        //Abre a Conexão com o Banco de Dados Oracle
         private bool AbreConexao()
         {
             try
@@ -71,14 +85,14 @@ namespace Ponto_TI.scripts
                 }
                 return true;
             }
-            catch (MySqlException ex)
+            catch (OracleException ex)
             {
                 //When handling errors, you can your application's response based 
                 //on the error number.
                 //The two most common error numbers when connecting are as follows:
                 //0: Cannot connect to server.
                 //1045: Invalid user name and/or password.
-                switch (ex.Number)
+                switch (ex.ErrorCode)
                 {
                     case 0:
                         using (StreamWriter w = File.AppendText("D:\\log.txt"))
@@ -110,7 +124,7 @@ namespace Ponto_TI.scripts
                 }                
                 return true;
             }
-            catch (MySqlException ex)
+            catch (OracleException ex)
             {
                 using (StreamWriter w = File.AppendText("D:\\log.txt"))
                 {
@@ -136,13 +150,13 @@ namespace Ponto_TI.scripts
             if(this.AbreConexao()==true)
             {
                 //Cria Comando
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                OracleCommand cmd = new OracleCommand(query, connection);
 
                 //Criando o data Reader
-                MySqlDataReader MySQL_DR = cmd.ExecuteReader();
+                OracleDataReader Oracle_DR = cmd.ExecuteReader();
 
                 DataTable DtColab = new DataTable();
-                DtColab.Load(MySQL_DR);
+                DtColab.Load(Oracle_DR);
                 ContColab = DtColab.Rows.Count;
                 Valor = DtColab.Rows[0].Field<Int32>("colab_id").ToString();
 
@@ -151,11 +165,9 @@ namespace Ponto_TI.scripts
                 if (ContColab != 1)
                 {                    
                     Valor = "Erro";
-                }
-                    
-
+                }                   
                     //Fecha Data Reader
-                    MySQL_DR.Close();
+                    Oracle_DR.Close();
 
                     //Fecha Conexão com Banco de Dados
                     this.FechaConexao();
@@ -167,8 +179,7 @@ namespace Ponto_TI.scripts
         {
             //String para pesquisa
             string query = "SELECT DISTINCT login_id, login_grupo FROM tbl_login WHERE login_username='" + login + "' AND login_senha= '" + senha + "'";
-
-
+            
             //Criando Lista para Armazenar os Dados do Select
 
             List<int>[] Lista = new List<int>[2];
@@ -178,13 +189,13 @@ namespace Ponto_TI.scripts
             if (this.AbreConexao() == true)
             {
                 //Cria Comando
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                OracleCommand cmd = new OracleCommand(query, connection);
 
                 //Criando o data Reader
-                MySqlDataReader MySQL_DR = cmd.ExecuteReader();
+                OracleDataReader Oracle_DR = cmd.ExecuteReader();
 
                 DataTable DtLogin = new DataTable();
-                DtLogin.Load(MySQL_DR);
+                DtLogin.Load(Oracle_DR);
                 ContLogin = DtLogin.Rows.Count;
 
                 if (ContLogin != 1)
@@ -193,15 +204,14 @@ namespace Ponto_TI.scripts
                 }
                 else
                 {
-                    IdUsuario = DtLogin.Rows[0].Field<Int32>("login_id");
-                    IdGrupoUsuario = DtLogin.Rows[0].Field<Int32>("login_grupo");
+                    strIdUsuario = Convert.ToString(DtLogin.Rows[0]["login_id"]);
+                    strIdGrupoUsuario = Convert.ToString(DtLogin.Rows[0]["login_grupo"]);
                     StatusLogin = "Sucesso";
                     DtLogin.Clear();
                 }
-
-
+                
                 //Fecha Data Reader
-                MySQL_DR.Close();
+                Oracle_DR.Close();
 
                 //Fecha Conexão com Banco de Dados
                 this.FechaConexao();
@@ -219,7 +229,7 @@ namespace Ponto_TI.scripts
                 if (this.AbreConexao() == true)
                 {
                     //create command and assign the query and connection from the constructor
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    OracleCommand cmd = new OracleCommand(query, connection);
 
                     //Execute command
                     cmd.ExecuteNonQuery();
@@ -248,7 +258,7 @@ namespace Ponto_TI.scripts
             if (this.AbreConexao() == true)
             {
                 //create mysql command
-                MySqlCommand cmd = new MySqlCommand();
+                OracleCommand cmd = new OracleCommand();
                 //Assign the query using CommandText
                 cmd.CommandText = query;
                 //Assign the connection using Connection
@@ -269,7 +279,7 @@ namespace Ponto_TI.scripts
 
             if (this.AbreConexao() == true)
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
+                OracleCommand cmd = new OracleCommand(query, connection);
                 cmd.ExecuteNonQuery();
                 this.FechaConexao();
             }
