@@ -42,10 +42,8 @@ namespace Ponto_TI.scripts
         private void Inicializa()
         {
             /*Atribuindo valores às variáveis que irão definir a string de conexão e cria 
-            arquivo de log*/
-            
-            datasource = "(DESCRIPTION =  (ADDRESS = (PROTOCOL = tcp)(HOST = sales - server)(PORT = 1521))  (CONNECT_DATA =(SERVICE_NAME = sales.us.acme.com)))";
-            //database = "PRODGNC";
+            arquivo de log*/            
+           
             uid = "teste";
             password = "teste";
             string ConnStr;            
@@ -53,7 +51,6 @@ namespace Ponto_TI.scripts
             //connection.ConnectionString = ConnStr;
             connection = new OracleConnection(ConnStr);          
             
-
             CriaLog();
         }
 
@@ -139,7 +136,7 @@ namespace Ponto_TI.scripts
         public void SelectCPF(string cpf)
         {
             //String para pesquisa
-            string query = "SELECT DISTINCT colab_id FROM tbl_colab WHERE colab_cpf='" + cpf +"' AND colab_status=0";
+            string query = "SELECT DISTINCT colab_id FROM tbl_colab WHERE colab_cpf='" + cpf +"' AND colab_status=0;";
             
 
             //Criando Lista para Armazenar os Dados do Select
@@ -152,22 +149,23 @@ namespace Ponto_TI.scripts
                 //Cria Comando
                 OracleCommand cmd = new OracleCommand(query, connection);
 
-                //Criando o data Reader
-                OracleDataReader Oracle_DR = cmd.ExecuteReader();
+                //Criando o data Adapter
+                OracleDataAdapter Oracle_DA = new OracleDataAdapter(query,connection);
+                DataSet Oracle_DS = new DataSet();
+                Oracle_DA.Fill(Oracle_DS);
 
-                DataTable DtColab = new DataTable();
-                DtColab.Load(Oracle_DR);
-                ContColab = DtColab.Rows.Count;
-                Valor = DtColab.Rows[0].Field<Int32>("colab_id").ToString();
-
-                DtColab.Clear();
+                
+                ContColab = Oracle_DS.Tables.Count;
+                //Valor = Oracle_DS.Tables[0].R.ToString();
+                
                 
                 if (ContColab != 1)
                 {                    
                     Valor = "Erro";
                 }                   
                     //Fecha Data Reader
-                    Oracle_DR.Close();
+                    Oracle_DA.Dispose();
+                    Oracle_DS.Dispose();
 
                     //Fecha Conexão com Banco de Dados
                     this.FechaConexao();

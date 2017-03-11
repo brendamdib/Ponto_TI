@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
+//using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Ponto_TI
@@ -22,6 +24,7 @@ namespace Ponto_TI
             string replacement = "";
             Regex rgx = new Regex(pattern);
             string cpf = rgx.Replace(txt_cpf.Text, replacement);
+            string ip, server;
             int codColab, acao;
             
             if (scripts.Funcoes.IsCpf(cpf))
@@ -30,7 +33,9 @@ namespace Ponto_TI
                 Conecta.Conecta_Oracle();
                 Conecta.SelectCPF(cpf);
                 //Response.Write(Conecta.Valor.ToString());
+                server = Dns.GetHostName();
 
+                ip = Dns.Resolve(server).AddressList[0].Address.ToString();
                 if(Conecta.Valor.ToString() == "Erro")
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "Erro", "alert('Colaborador não encontrado com este CPF, isso pode acontecer, pelos seguintes motivos: CPF Invalido, Colaborador não cadastrado ou Colaborador desligado da empresa');", true);
@@ -39,7 +44,7 @@ namespace Ponto_TI
                 {
                     codColab = Int32.Parse(Conecta.Valor);
                     acao = Int32.Parse(rdo_acao.SelectedValue.ToString());
-
+                   
                     Conecta.InserePonto(codColab, acao);
 
                     btn_submit.Enabled = false;
@@ -51,6 +56,6 @@ namespace Ponto_TI
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "Erro", "alert('CPF Invalido');", true);
             }
-        }
+        }       
     }
 }
