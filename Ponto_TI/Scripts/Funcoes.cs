@@ -14,16 +14,13 @@ namespace Ponto_TI.scripts
     public class Funcoes
     {
         //declaração de variáveis
-        private OracleConnection connection;
-        private string datasource;
-        //private string database;
+        private OracleConnection connection;      
         private string uid;
         private string password;
-        private StreamWriter Arqlog;
-        public string Valor, StatusLogin;
+        private StreamWriter Arqlog;        
         public int ContColab, IdUsuario, IdGrupoUsuario, ContLogin;
-        public string strIdUsuario, strIdGrupoUsuario;
-                
+        public string strIdUsuario, strIdGrupoUsuario, Valor, StatusLogin, MsgRetorno;
+
         public string GravaIP()
         {
 
@@ -135,91 +132,114 @@ namespace Ponto_TI.scripts
         //Select CPF
         public void SelectCPF(string cpf)
         {
-            //String para pesquisa
-            string query = "SELECT DISTINCT colab_id FROM tbl_colab WHERE colab_cpf='" + cpf +"' AND colab_status=0;";
-            
-
-            //Criando Lista para Armazenar os Dados do Select
-
-            List<string>[] Lista = new List<string>[1];
-            Lista[0] = new List<string>();
-
-            if(this.AbreConexao()==true)
+           
+            try
             {
-                //Cria Comando
-                OracleCommand cmd = new OracleCommand(query, connection);
+                //String para pesquisa
+                string query = "SELECT DISTINCT colab_id FROM tbl_colab WHERE colab_cpf='" + cpf + "'";
+                
+                //Criando Lista para Armazenar os Dados do Select
+                List<string>[] Lista = new List<string>[1];
+                Lista[0] = new List<string>();
 
-                //Criando o data Adapter
-                OracleDataAdapter Oracle_DA = new OracleDataAdapter(query,connection);
-                DataSet Oracle_DS = new DataSet();
-                Oracle_DA.Fill(Oracle_DS);
-
-                
-                ContColab = Oracle_DS.Tables.Count;
-                //Valor = Oracle_DS.Tables[0].R.ToString();
-                
-                
-                if (ContColab != 1)
+                if (this.AbreConexao() == true)
                 {                    
-                    Valor = "Erro";
-                }                   
+                    //Cria Comando
+                    OracleCommand cmd = new OracleCommand(query, connection);
+
+                    //Criando o data Reader
+                    OracleDataReader Oracle_DR = cmd.ExecuteReader();
+                    DataTable Oracle_DT = new DataTable();
+                    Oracle_DT.Load(Oracle_DR);
+                    
+                    ContColab = Oracle_DT.Rows.Count;
+                    
+                    
+                    if (ContColab == 1)
+                    {
+                        MsgRetorno = "CPF CADASTRADO";
+                        Valor = Oracle_DT.Rows[0]["colab_id"].ToString();                        
+                    }
+                    else if (ContColab == 0)
+                    {
+                        MsgRetorno = "CPF NAO CADASTRADO";               
+                    }
                     //Fecha Data Reader
-                    Oracle_DA.Dispose();
-                    Oracle_DS.Dispose();
+                    Oracle_DR.Close();
 
                     //Fecha Conexão com Banco de Dados
-                    this.FechaConexao();
+                    this.FechaConexao();                    
+                }
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar Select na tabela tbl_colab", w);
+                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
+                }
+            }            
         }
 
-        //Select CPF
+        //Select Login
         public void SelectLogin(string login, string senha)
         {
-            //String para pesquisa
-            string query = "SELECT DISTINCT login_id, login_grupo FROM tbl_login WHERE login_username='" + login + "' AND login_senha= '" + senha + "'";
-            
-            //Criando Lista para Armazenar os Dados do Select
-
-            List<int>[] Lista = new List<int>[2];
-            Lista[0] = new List<int>();
-            Lista[1] = new List<int>();
-
-            if (this.AbreConexao() == true)
+            try
             {
-                //Cria Comando
-                OracleCommand cmd = new OracleCommand(query, connection);
+                //String para pesquisa
+                string query = "SELECT DISTINCT login_id, login_grupo FROM tbl_login WHERE login_username='" + login + "' AND login_senha= '" + senha + "'";
+            
+                //Criando Lista para Armazenar os Dados do Select
 
-                //Criando o data Reader
-                OracleDataReader Oracle_DR = cmd.ExecuteReader();
+                List<int>[] Lista = new List<int>[2];
+                Lista[0] = new List<int>();
+                Lista[1] = new List<int>();
 
-                DataTable DtLogin = new DataTable();
-                DtLogin.Load(Oracle_DR);
-                ContLogin = DtLogin.Rows.Count;
-
-                if (ContLogin != 1)
+                if (this.AbreConexao() == true)
                 {
-                    StatusLogin = "Erro";
-                }
-                else
-                {
-                    strIdUsuario = Convert.ToString(DtLogin.Rows[0]["login_id"]);
-                    strIdGrupoUsuario = Convert.ToString(DtLogin.Rows[0]["login_grupo"]);
-                    StatusLogin = "Sucesso";
-                    DtLogin.Clear();
-                }
+                    //Cria Comando
+                    OracleCommand cmd = new OracleCommand(query, connection);
+
+                    //Criando o data Reader
+                    OracleDataReader Oracle_DR = cmd.ExecuteReader();
+
+                    DataTable DtLogin = new DataTable();
+                    DtLogin.Load(Oracle_DR);
+                    ContLogin = DtLogin.Rows.Count;
+
+                    if (ContLogin != 1)
+                    {
+                        StatusLogin = "Erro";
+                    }
+                    else
+                    {
+                        strIdUsuario = Convert.ToString(DtLogin.Rows[0]["login_id"]);
+                        strIdGrupoUsuario = Convert.ToString(DtLogin.Rows[0]["login_grupo"]);
+                        StatusLogin = "Sucesso";
+                        DtLogin.Clear();                        
+                    }
                 
-                //Fecha Data Reader
-                Oracle_DR.Close();
+                    //Fecha Data Reader
+                    Oracle_DR.Close();
 
-                //Fecha Conexão com Banco de Dados
-                this.FechaConexao();
+                    //Fecha Conexão com Banco de Dados
+                    this.FechaConexao();            
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar Select na tabela tbl_login", w);
+                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
+                }
             }
         }
 
-        //Insert statement
-        public void InserePonto( int id_colab, int cod_acao)
+        //Insere Ponto
+        public void InserePonto( int id_colab, int cod_acao, string ipHost)
         {
-            string query = "INSERT INTO tbl_reg_ponto VALUES(" + id_colab + ", NOW(), " +cod_acao + ")";
+            string query = "INSERT INTO tbl_regponto VALUES(" + id_colab + ", SysDate, " + cod_acao + ",'"+ ipHost +"')";
 
             //open connection
             try
@@ -245,6 +265,98 @@ namespace Ponto_TI.scripts
                 }                
                 throw;
             }            
+        }
+
+        //Insere Colaborador
+        public void InsereColab(string ColabNome, string ColabCPF)
+        {
+            try
+            {
+                bool StatusCPF = IsCpf(ColabCPF);
+                
+                if (StatusCPF == true)
+                {
+                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                    {
+                        EscreveLog(DateTime.Now.ToString() + " - " + "Status do CPF = " + StatusCPF, w);
+                    }
+
+                    SelectCPF(ColabCPF);
+                    if (MsgRetorno == "CPF NAO CADASTRADO")
+
+                        if (this.AbreConexao() == true)
+                        {
+                            string query = "INSERT INTO TBL_COLAB (COLAB_NOME, COLAB_CPF) VALUES('" + ColabNome.Trim() + "','" + ColabCPF.Trim() + "')";
+
+                            //create command and assign the query and connection from the constructor
+                            OracleCommand cmd = new OracleCommand(query, connection);
+
+                            //Execute command
+                            cmd.ExecuteNonQuery();
+
+                            //close connection
+                            this.FechaConexao();
+                        }
+                }
+                else
+                {
+                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                    {
+                        EscreveLog(DateTime.Now.ToString() + " - " + "Status do CPF = " + StatusCPF, w);
+                    }
+                }               
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao inserir colaborador", w);
+                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
+                }
+                throw;
+            }
+        }
+
+        //Insere Login
+        public void InsereLogin(string LoginUser, string LoginSenha, int LoginGrupo, string LoginCPF)
+        {
+            try
+            {
+                string query = "INSERT INTO TBL_LOGIN (LOGIN_USERNAME, LOGIN_SENHA, LOGIN_STATUS, LOGIN_GRUPO, LOGIN_COLAB_ID) VALUES('" + LoginUser.Trim() + "','" + LoginSenha.Trim() + "'," + 1 + "," + LoginGrupo +", (SELECT COLAB_ID FROM TBL_COLAB WHERE COLAB_CPF='" + LoginCPF.Trim() + "'))";
+                
+                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Salvando o login" + LoginUser + "no banco de dados", w);
+                }
+
+                if (this.AbreConexao() == true)
+                {
+                    //create command and assign the query and connection from the constructor
+                    OracleCommand cmd = new OracleCommand(query, connection);
+
+                    //Execute command
+                    cmd.ExecuteNonQuery();
+
+                    //close connection
+                    this.FechaConexao();
+                }                
+                else
+                {
+                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                    {
+                        EscreveLog(DateTime.Now.ToString() + " - " + "A conexão com o banco de dados não está aberta", w);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao inserir colaborador", w);
+                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
+                }
+                throw;
+            }
         }
 
         //Update statement

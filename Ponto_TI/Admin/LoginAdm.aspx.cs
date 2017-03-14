@@ -20,18 +20,18 @@ namespace Ponto_TI.Admin
 
         protected void btn_submit_Click(object sender, EventArgs e)
         {   
-            scripts.Funcoes Conecta = new scripts.Funcoes();
-            Conecta.Conecta_Oracle();
-            Conecta.SelectLogin(txt_adm_login.Text, txt_adm_senha.Text);
+            scripts.Funcoes scpFuncoes = new scripts.Funcoes();
+            scpFuncoes.Conecta_Oracle();
+            scpFuncoes.SelectLogin(txt_adm_login.Text, txt_adm_senha.Text);
             //Response.Write(Conecta.Valor.ToString());
 
-            if (Conecta.StatusLogin.ToString() == "Erro")
+            if (scpFuncoes.StatusLogin.ToString() == "Erro")
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "Erro", "alert('Usuário ou senha inválidos');", true);
             }
             else
             {
-                Application["LoginStatus"] = Conecta.StatusLogin.ToString();        
+                Response.Write(scpFuncoes.strIdGrupoUsuario.ToString());
                 Response.Redirect("indexAdm.aspx");
             }                     
         }

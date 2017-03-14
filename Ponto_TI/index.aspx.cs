@@ -29,23 +29,24 @@ namespace Ponto_TI
             
             if (scripts.Funcoes.IsCpf(cpf))
             {   
-                scripts.Funcoes Conecta = new scripts.Funcoes();
-                Conecta.Conecta_Oracle();
-                Conecta.SelectCPF(cpf);
+                scripts.Funcoes scpFuncoes = new scripts.Funcoes();
+                scpFuncoes.Conecta_Oracle();
+                scpFuncoes.SelectCPF(cpf);
                 //Response.Write(Conecta.Valor.ToString());
                 server = Dns.GetHostName();
 
-                ip = Dns.Resolve(server).AddressList[0].Address.ToString();
-                if(Conecta.Valor.ToString() == "Erro")
+                ip = (Dns.GetHostByName(server)).AddressList[1].ToString();
+
+                if (scpFuncoes.Valor.ToString() == "Erro")
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "Erro", "alert('Colaborador não encontrado com este CPF, isso pode acontecer, pelos seguintes motivos: CPF Invalido, Colaborador não cadastrado ou Colaborador desligado da empresa');", true);
                 }
                 else
                 {
-                    codColab = Int32.Parse(Conecta.Valor);
+                    codColab = Int32.Parse(scpFuncoes.Valor);
                     acao = Int32.Parse(rdo_acao.SelectedValue.ToString());
                    
-                    Conecta.InserePonto(codColab, acao);
+                    scpFuncoes.InserePonto(codColab, acao, ip);
 
                     btn_submit.Enabled = false;
 
