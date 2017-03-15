@@ -113,9 +113,6 @@
     <Content Include="Admin\LoginAdm.aspx" />
     <Content Include="Admin\RelatoriosAdm.aspx" />
     <Content Include="packages.config" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Admin\SiteAdmin.Master" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

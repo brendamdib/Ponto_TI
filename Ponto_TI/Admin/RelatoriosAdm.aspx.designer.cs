@@ -13,15 +13,6 @@ namespace Ponto_TI.Admin {
     public partial class RelatoriosAdmin {
         
         /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-        
-        /// <summary>
         /// lbl_info_relatorio control.
         /// </summary>
         /// <remarks>
@@ -83,5 +74,14 @@ namespace Ponto_TI.Admin {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Microsoft.Reporting.WebForms.ReportViewer rpt_rel_horas;
+        
+        /// <summary>
+        /// DSOracleReport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource DSOracleReport;
     }
 }
