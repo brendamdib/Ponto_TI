@@ -6,7 +6,6 @@ using System.Data;
 using System.IO;
 using System.Web.UI;
 using System.Net.NetworkInformation;
-//using System.Data.OracleClient;
 using Oracle.DataAccess.Client;
 
 namespace Ponto_TI.scripts
@@ -20,17 +19,7 @@ namespace Ponto_TI.scripts
         private StreamWriter Arqlog;        
         public int ContColab, IdUsuario, IdGrupoUsuario, ContLogin;
         public string strIdUsuario, strIdGrupoUsuario, Valor, StatusLogin, MsgRetorno;
-
-        public string GravaIP()
-        {
-
-            string IPAddress = HttpContext.Current.Request.UserHostAddress;
-            string Hostname = HttpContext.Current.Request.UserHostName;
-            Hostname = System.Environment.MachineName;            
-            return IPAddress;
-
-        }
-
+                
         public void Conecta_Oracle()
         {
             Inicializa();
