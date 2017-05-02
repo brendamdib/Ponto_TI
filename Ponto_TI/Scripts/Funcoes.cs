@@ -131,7 +131,7 @@ namespace Ponto_TI.scripts
             try
             {
                 //String para pesquisa
-                string query = "SELECT DISTINCT colab_id FROM tbl_colab WHERE colab_cpf='" + cpf + "'";
+                string query = "SELECT DISTINCT id_colab FROM tbl_colab WHERE cpf_colab='" + cpf + "'";
                 
                 //Criando Lista para Armazenar os Dados do Select
                 List<string>[] Lista = new List<string>[1];
@@ -182,7 +182,7 @@ namespace Ponto_TI.scripts
             try
             {
                 //String para pesquisa
-                string query = "SELECT DISTINCT login_id, login_grupo FROM tbl_login WHERE login_username='" + login + "' AND login_senha= '" + senha + "'";
+                string query = "SELECT DISTINCT id_colab, grplogin_colab FROM tbl_colab WHERE usr_colab='" + login + "' AND psw_colab= '" + senha + "'";
             
                 //Criando Lista para Armazenar os Dados do Select
 

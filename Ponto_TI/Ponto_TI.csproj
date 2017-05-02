@@ -101,6 +101,7 @@
     <Content Include="Admin\IndexAdm.aspx" />
     <Content Include="Admin\LoginAdm.aspx" />
     <Content Include="Admin\RelatoriosAdm.aspx" />
+    <Content Include="Documentacao\Criacao de Banco de Dados SQL Server.sql" />
     <Content Include="packages.config" />
     <Content Include="Admin\SiteAdmin.Master" />
     <Content Include="Documentacao\PontoOnLine.vsdx" />
