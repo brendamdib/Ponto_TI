@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Web.UI;
 using System.Net.NetworkInformation;
-using Oracle.DataAccess.Client;
 
 namespace Ponto_TI.scripts
 {
     public class Funcoes
     {
         //declaração de variáveis
-        private OracleConnection connection;      
+        private SqlConnection connection;      
         private string uid;
         private string password;
         private StreamWriter Arqlog;        
@@ -27,15 +27,13 @@ namespace Ponto_TI.scripts
 
         private void Inicializa()
         {
-            /*Atribuindo valores às variáveis que irão definir a string de conexão e cria 
-            arquivo de log*/            
-           
-            uid = "teste";
-            password = "teste";
+            /*Atribuindo valores às variáveis que irão definir a string de conexão e cria arquivo de log*/                       
+            uid = "pontoti";
+            password = "pontoadmin";
             string ConnStr;            
-            ConnStr = "Data Source=//10.200.1.201:1521/PRODGNC;User ID=" + uid + ";Password = "+ password +"";
+            ConnStr = "Data Source=localhost;User ID=" + uid + ";Password = "+ password +"";
             //connection.ConnectionString = ConnStr;
-            connection = new OracleConnection(ConnStr);          
+            connection = new SqlConnection(ConnStr);          
             
             CriaLog();
         }
@@ -45,7 +43,7 @@ namespace Ponto_TI.scripts
             //Criando Arquivo de Log
             using (Arqlog = File.AppendText("D:\\log.txt"))
             {
-                Arqlog.WriteLine("Conexão com Banco de Dados Oracle ");
+                Arqlog.WriteLine("Conexão com Banco de Dados SQL Server ");
                 Arqlog.WriteLine("==============================================");
                 Arqlog.WriteLine("Data/Hora:" + DateTime.Now.ToString());               
             }
@@ -68,13 +66,10 @@ namespace Ponto_TI.scripts
                 }
                 return true;
             }
-            catch (OracleException ex)
+            catch (SqlException ex)
             {
-                //When handling errors, you can your application's response based 
-                //on the error number.
-                //The two most common error numbers when connecting are as follows:
-                //0: Cannot connect to server.
-                //1045: Invalid user name and/or password.
+                //Verifica o erro durante a conexão e grava no log, os erros mais comuns são: 
+                
                 switch (ex.ErrorCode)
                 {
                     case 0:
@@ -87,15 +82,27 @@ namespace Ponto_TI.scripts
                     case 1045:
                         using (StreamWriter w = File.AppendText("D:\\log.txt"))
                         {
-                            EscreveLog(DateTime.Now.ToString() + " - " + "Usuário ou Senha Inválidos", w);
+                            EscreveLog(DateTime.Now.ToString() + " - " + "Usuário ou Senha Inválidos!", w);
                         }                
+                        break;
+                    case 4060:
+                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        {
+                            EscreveLog(DateTime.Now.ToString() + " - " + "O usuário não possui permissão de acesso à base de dados especificada!", w);
+                        }
+                        break;
+                    case 40532:
+                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        {
+                            EscreveLog(DateTime.Now.ToString() + " - " + "Não foi possível conectar ao servidor com o login especificado!", w);
+                        }
                         break;
                 }
                 return false;
             }
         }
 
-        //Close connection
+        //Fecha conexão com Banco de Dados
         private bool FechaConexao()
         {
             try
@@ -107,7 +114,7 @@ namespace Ponto_TI.scripts
                 }                
                 return true;
             }
-            catch (OracleException ex)
+            catch (SqlException ex)
             {
                 using (StreamWriter w = File.AppendText("D:\\log.txt"))
                 {
@@ -118,10 +125,9 @@ namespace Ponto_TI.scripts
             }
         }
 
-        //Select CPF
+        //Pesquisa o CPF na base de dados
         public void SelectCPF(string cpf)
-        {
-           
+        {           
             try
             {
                 //String para pesquisa
@@ -134,27 +140,27 @@ namespace Ponto_TI.scripts
                 if (this.AbreConexao() == true)
                 {                    
                     //Cria Comando
-                    OracleCommand cmd = new OracleCommand(query, connection);
+                    SqlCommand cmd = new SqlCommand(query, connection);
 
                     //Criando o data Reader
-                    OracleDataReader Oracle_DR = cmd.ExecuteReader();
-                    DataTable Oracle_DT = new DataTable();
-                    Oracle_DT.Load(Oracle_DR);
+                    SqlDataReader SQL_DR = cmd.ExecuteReader();
+                    DataTable SQL_DT = new DataTable();
+                    SQL_DT.Load(SQL_DR);
                     
-                    ContColab = Oracle_DT.Rows.Count;
+                    ContColab = SQL_DT.Rows.Count;
                     
                     
                     if (ContColab == 1)
                     {
                         MsgRetorno = "CPF CADASTRADO";
-                        Valor = Oracle_DT.Rows[0]["colab_id"].ToString();                        
+                        Valor = SQL_DT.Rows[0]["colab_id"].ToString();                        
                     }
                     else if (ContColab == 0)
                     {
                         MsgRetorno = "CPF NAO CADASTRADO";               
                     }
                     //Fecha Data Reader
-                    Oracle_DR.Close();
+                    SQL_DR.Close();
 
                     //Fecha Conexão com Banco de Dados
                     this.FechaConexao();                    
@@ -170,7 +176,7 @@ namespace Ponto_TI.scripts
             }            
         }
 
-        //Select Login
+        //Pesquisa o login na base de dados
         public void SelectLogin(string login, string senha)
         {
             try
@@ -187,13 +193,13 @@ namespace Ponto_TI.scripts
                 if (this.AbreConexao() == true)
                 {
                     //Cria Comando
-                    OracleCommand cmd = new OracleCommand(query, connection);
+                    SqlCommand cmd = new SqlCommand(query, connection);
 
                     //Criando o data Reader
-                    OracleDataReader Oracle_DR = cmd.ExecuteReader();
+                    SqlDataReader SQL_DR = cmd.ExecuteReader();
 
                     DataTable DtLogin = new DataTable();
-                    DtLogin.Load(Oracle_DR);
+                    DtLogin.Load(SQL_DR);
                     ContLogin = DtLogin.Rows.Count;
 
                     if (ContLogin != 1)
@@ -209,7 +215,7 @@ namespace Ponto_TI.scripts
                     }
                 
                     //Fecha Data Reader
-                    Oracle_DR.Close();
+                    SQL_DR.Close();
 
                     //Fecha Conexão com Banco de Dados
                     this.FechaConexao();            
@@ -229,19 +235,18 @@ namespace Ponto_TI.scripts
         public void InserePonto( int id_colab, int cod_acao, string ipHost)
         {
             string query = "INSERT INTO tbl_regponto VALUES(" + id_colab + ", SysDate, " + cod_acao + ",'"+ ipHost +"')";
-
-            //open connection
+            
             try
             {
                 if (this.AbreConexao() == true)
                 {
-                    //create command and assign the query and connection from the constructor
-                    OracleCommand cmd = new OracleCommand(query, connection);
+                    //Executa a query definida na variável "query" definida acima
+                    SqlCommand cmd = new SqlCommand(query, connection);
 
-                    //Execute command
+                    //Executa comando
                     cmd.ExecuteNonQuery();
 
-                    //close connection
+                    //Fecha Conexão
                     this.FechaConexao();
                 }
             }
@@ -277,13 +282,13 @@ namespace Ponto_TI.scripts
                         {
                             string query = "INSERT INTO TBL_COLAB (COLAB_NOME, COLAB_CPF) VALUES('" + ColabNome.Trim() + "','" + ColabCPF.Trim() + "')";
 
-                            //create command and assign the query and connection from the constructor
-                            OracleCommand cmd = new OracleCommand(query, connection);
+                            //Executa a query definida na variável "query" definida acima
+                            SqlCommand cmd = new SqlCommand(query, connection);
 
-                            //Execute command
+                            //Executa comando
                             cmd.ExecuteNonQuery();
 
-                            //close connection
+                            //Fecha Conexão
                             this.FechaConexao();
                         }
                 }
@@ -320,13 +325,13 @@ namespace Ponto_TI.scripts
 
                 if (this.AbreConexao() == true)
                 {
-                    //create command and assign the query and connection from the constructor
-                    OracleCommand cmd = new OracleCommand(query, connection);
+                    //Executa a query definida na variável "query" definida acima
+                    SqlCommand cmd = new SqlCommand(query, connection);
 
-                    //Execute command
+                    //Executa comando
                     cmd.ExecuteNonQuery();
 
-                    //close connection
+                    //Fecha Conexão
                     this.FechaConexao();
                 }                
                 else
@@ -356,17 +361,13 @@ namespace Ponto_TI.scripts
             //Open connection
             if (this.AbreConexao() == true)
             {
-                //create mysql command
-                OracleCommand cmd = new OracleCommand();
-                //Assign the query using CommandText
-                cmd.CommandText = query;
-                //Assign the connection using Connection
-                cmd.Connection = connection;
+                //Executa a query definida na variável "query" definida acima
+                SqlCommand cmd = new SqlCommand(query, connection);
 
-                //Execute query
+                //Executa comando
                 cmd.ExecuteNonQuery();
 
-                //close connection
+                //Fecha Conexão
                 this.FechaConexao();
             }
         }
@@ -378,12 +379,18 @@ namespace Ponto_TI.scripts
 
             if (this.AbreConexao() == true)
             {
-                OracleCommand cmd = new OracleCommand(query, connection);
+                //Executa a query definida na variável "query" definida acima
+                SqlCommand cmd = new SqlCommand(query, connection);
+
+                //Executa comando
                 cmd.ExecuteNonQuery();
+
+                //Fecha Conexão
                 this.FechaConexao();
             }
         }
 
+        //Validação de CPF
         public static bool IsCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
