@@ -16,8 +16,8 @@ namespace Ponto_TI.Admin
 
         public void VerificaLogin()
         {
-            scripts.Funcoes scpFuncoes = new scripts.Funcoes();
-            if (scpFuncoes.strIdGrupoUsuario.ToString() == "")
+            HttpContext context = HttpContext.Current;
+            if (Convert.ToString(context.Session["LoginEstado"]) != "OK")
             {
                 Response.Redirect("LoginAdm.aspx");
             }

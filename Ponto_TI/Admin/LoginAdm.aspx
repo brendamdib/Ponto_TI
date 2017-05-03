@@ -10,7 +10,7 @@
     <link href="../CSS/Style.css" rel="stylesheet" />
     <form id="frm_login" runat="server">
     <div>
-    <table>
+    <table class="tbllogin">
                 <tr>
                     <td colspan="2">
                         <img src="../imagens/61547-logo-gnc.png" /></td>

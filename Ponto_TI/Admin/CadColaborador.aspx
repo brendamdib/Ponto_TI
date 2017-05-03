@@ -27,8 +27,22 @@
         </asp:TableRow>
         <asp:TableRow>
             <asp:TableCell>GRUPO:</asp:TableCell>
-            <asp:TableCell><asp:DropDownList ID="cbo_grupo" runat="server" Width="300px" DataSourceID="OracleDS" DataTextField="PERMISSAO_NOME" DataValueField="PERMISSAO_ID"></asp:DropDownList>
-                 <asp:SqlDataSource ID="OracleDS" runat="server" ConnectionString="<%$ ConnectionStrings:ConnStrOracle %>" ProviderName="<%$ ConnectionStrings:ConnStrOracle.ProviderName %>" SelectCommand="SELECT PERMISSAO_ID, PERMISSAO_NOME FROM TESTE.TBL_PERMISSAO ORDER BY PERMISSAO_NOME"></asp:SqlDataSource>
+            <asp:TableCell>
+                <asp:DropDownList ID="cbo_grupo" runat="server" Width="300px" DataSourceID="SqlDS_Grupo" DataTextField="nome_grupoacesso" DataValueField="id_grupoacesso"></asp:DropDownList>
+                 <asp:SqlDataSource ID="SqlDS_Grupo" runat="server" ConnectionString="<%$ ConnectionStrings:PontoOnLineConnectionString %>" SelectCommand="SELECT * FROM [tbl_grupoacesso] ORDER BY [nome_grupoacesso]"></asp:SqlDataSource>   
+            </asp:TableCell>
+        </asp:TableRow>
+          <asp:TableRow>
+            <asp:TableCell>REGIONAL:</asp:TableCell>
+            <asp:TableCell>
+                <asp:DropDownList ID="cbo_regional" runat="server" Width="300px" DataSourceID="SQLDS_Regional" DataTextField="nome_regional" DataValueField="id_regional"></asp:DropDownList>
+                 <asp:SqlDataSource ID="SQLDS_Regional" runat="server" ConnectionString="<%$ ConnectionStrings:PontoOnLineConnectionString %>" SelectCommand="SELECT * FROM [tbl_regional] ORDER BY [nome_regional]"></asp:SqlDataSource>   
+            </asp:TableCell>
+        </asp:TableRow>
+          <asp:TableRow>
+            <asp:TableCell>STATUS:</asp:TableCell>
+            <asp:TableCell>
+                <asp:RadioButton ID="rdo_status_ativo" runat="server" Text="Ativo" GroupName="status"/> &nbsp;<asp:RadioButton ID="rdo_status_inativo" runat="server" Text="Inativo" GroupName="status" />
             </asp:TableCell>
         </asp:TableRow>
         <asp:TableFooterRow>
@@ -36,6 +50,6 @@
                 <asp:Button ID="btn_submit" runat="server" Text="Cadastrar" OnClick="btn_submit_Click" />
             </asp:TableCell>
         </asp:TableFooterRow>
-    </asp:Table>     
+    </asp:Table>          
     <asp:Label ID="lbl_mensagem" runat="server" Text=""></asp:Label>  
 </asp:Content>

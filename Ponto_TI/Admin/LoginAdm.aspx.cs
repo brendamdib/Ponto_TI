@@ -21,7 +21,7 @@ namespace Ponto_TI.Admin
         protected void btn_submit_Click(object sender, EventArgs e)
         {   
             scripts.Funcoes scpFuncoes = new scripts.Funcoes();
-            scpFuncoes.Conecta_Oracle();
+            scpFuncoes.Conecta_SQL();
             scpFuncoes.SelectLogin(txt_adm_login.Text, txt_adm_senha.Text);
             //Response.Write(Conecta.Valor.ToString());
 
@@ -32,6 +32,7 @@ namespace Ponto_TI.Admin
             else
             {
                 Response.Write(scpFuncoes.strIdGrupoUsuario.ToString());
+                Session["LoginEstado"] = "OK";
                 Response.Redirect("indexAdm.aspx");
             }                     
         }

@@ -30,12 +30,12 @@
                 <td>Ação:</td>
                 <td>
                     <asp:RadioButtonList ID="rdo_acao" runat="server">
-                        <asp:ListItem Selected="True" Value="0">Início do Expediente</asp:ListItem>
-                        <asp:ListItem Value="1">Saída Almoço</asp:ListItem>
-                        <asp:ListItem Value="2">Retorno Almoço</asp:ListItem>
-                        <asp:ListItem Value="3">Fim Expediente</asp:ListItem>
-                        <asp:ListItem Value="4">Início Hora Extra</asp:ListItem>
-                        <asp:ListItem Value="5">Fim Hora Extra</asp:ListItem>
+                        <asp:ListItem Selected="True" Value="1">Início do Expediente</asp:ListItem>
+                        <asp:ListItem Value="2">Saída Almoço</asp:ListItem>
+                        <asp:ListItem Value="3">Retorno Almoço</asp:ListItem>
+                        <asp:ListItem Value="4">Fim Expediente</asp:ListItem>
+                        <asp:ListItem Value="5">Início Hora Extra</asp:ListItem>
+                        <asp:ListItem Value="6">Fim Hora Extra</asp:ListItem>
                     </asp:RadioButtonList>
                 </td>
             </tr>

@@ -13,22 +13,22 @@ namespace Ponto_TI.Admin {
     public partial class RelatoriosAdmin {
         
         /// <summary>
-        /// lbl_info_relatorio control.
+        /// lbl_periodo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_info_relatorio;
+        protected global::System.Web.UI.WebControls.Label lbl_periodo;
         
         /// <summary>
-        /// lbl_inicio control.
+        /// lbl_dataini control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_inicio;
+        protected global::System.Web.UI.WebControls.Label lbl_dataini;
         
         /// <summary>
         /// txt_dataini control.
@@ -40,13 +40,13 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.WebControls.TextBox txt_dataini;
         
         /// <summary>
-        /// lbl_fim control.
+        /// lbl_datafim control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_fim;
+        protected global::System.Web.UI.WebControls.Label lbl_datafim;
         
         /// <summary>
         /// txt_datafim control.
@@ -58,6 +58,51 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.WebControls.TextBox txt_datafim;
         
         /// <summary>
+        /// lbl_tiposrel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_tiposrel;
+        
+        /// <summary>
+        /// rdo_colab control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdo_colab;
+        
+        /// <summary>
+        /// cbo_Colab control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cbo_Colab;
+        
+        /// <summary>
+        /// rdo_regional control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdo_regional;
+        
+        /// <summary>
+        /// cbo_regional control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cbo_regional;
+        
+        /// <summary>
         /// btn_pesquisar control.
         /// </summary>
         /// <remarks>
@@ -67,21 +112,30 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.WebControls.Button btn_pesquisar;
         
         /// <summary>
-        /// rpt_rel_horas control.
+        /// SQLDS_Colab control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Microsoft.Reporting.WebForms.ReportViewer rpt_rel_horas;
+        protected global::System.Web.UI.WebControls.SqlDataSource SQLDS_Colab;
         
         /// <summary>
-        /// DSOracleReport control.
+        /// SQLDS_Regional control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource DSOracleReport;
+        protected global::System.Web.UI.WebControls.SqlDataSource SQLDS_Regional;
+        
+        /// <summary>
+        /// CrystalReportViewer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CrystalDecisions.Web.CrystalReportViewer CrystalReportViewer;
     }
 }

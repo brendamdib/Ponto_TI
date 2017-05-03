@@ -4,7 +4,8 @@
 
 table {
  
-    margin:auto;   
+    margin: 15px 0px 0px 10px;      
+    border: 1px solid black;    
     width:auto;        
 }
 
@@ -18,4 +19,13 @@ td#botao{
 
 label#mensagem{
     text-align:center;
+}
+
+table.tbllogin{    
+    margin: auto;
+    margin-top:200px;      
+}
+
+label{
+    font-weight:bolder;
 }

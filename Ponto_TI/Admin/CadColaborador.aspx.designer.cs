@@ -67,13 +67,49 @@ namespace Ponto_TI.Admin {
         protected global::System.Web.UI.WebControls.DropDownList cbo_grupo;
         
         /// <summary>
-        /// OracleDS control.
+        /// SqlDS_Grupo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource OracleDS;
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDS_Grupo;
+        
+        /// <summary>
+        /// cbo_regional control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cbo_regional;
+        
+        /// <summary>
+        /// SQLDS_Regional control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource SQLDS_Regional;
+        
+        /// <summary>
+        /// rdo_status_ativo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdo_status_ativo;
+        
+        /// <summary>
+        /// rdo_status_inativo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdo_status_inativo;
         
         /// <summary>
         /// btn_submit control.

@@ -19,11 +19,11 @@
             <DynamicSelectedStyle BackColor="#507CD1" />
             <Items>
                 <asp:MenuItem Text="Relatorios" Value="menu_relatorios">
-                    <asp:MenuItem Text="Extrato de Horas" Value="menu_extrato_horas" NavigateUrl="~/Admin/RelatoriosAdm.aspx"></asp:MenuItem>
-                    <asp:MenuItem Text="Horas Colaboradores" Value="menu_horas_colab"></asp:MenuItem>
+                    <asp:MenuItem Text="Extrato de Horas por Colaborador" Value="menu_extrato_horas" NavigateUrl="~/Admin/RelatoriosAdm.aspx"></asp:MenuItem>
+                    <asp:MenuItem Text="Horas Colaboradores por regional" Value="menu_horas_colab"></asp:MenuItem>
                 </asp:MenuItem>
                 <asp:MenuItem Text="Usuários" Value="menu_usuarios">
-                    <asp:MenuItem Text="Cadastro de Colaboradores" Value="menu_cad_colab"></asp:MenuItem>
+                    <asp:MenuItem Text="Cadastro de Colaboradores" Value="menu_cad_colab" NavigateUrl="~/Admin/CadColaborador.aspx"></asp:MenuItem>
                     <asp:MenuItem Text="Alteração de Cadastro" Value="menu_alt_colab"></asp:MenuItem>
                 </asp:MenuItem>
             </Items>

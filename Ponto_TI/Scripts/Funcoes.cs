@@ -17,10 +17,10 @@ namespace Ponto_TI.scripts
         private string uid;
         private string password;
         private StreamWriter Arqlog;        
-        public int ContColab, IdUsuario, IdGrupoUsuario, ContLogin;
+        public int ContColab, ContPonto, IdUsuario, IdGrupoUsuario, ContLogin;
         public string strIdUsuario, strIdGrupoUsuario, Valor, StatusLogin, MsgRetorno;
                 
-        public void Conecta_Oracle()
+        public void Conecta_SQL()
         {
             Inicializa();
         }
@@ -41,7 +41,7 @@ namespace Ponto_TI.scripts
         public void CriaLog()
         {
             //Criando Arquivo de Log
-            using (Arqlog = File.AppendText("D:\\log.txt"))
+            using (Arqlog = File.AppendText("E:\\log.txt"))
             {
                 Arqlog.WriteLine("Conexão com Banco de Dados SQL Server ");
                 Arqlog.WriteLine("==============================================");
@@ -59,11 +59,14 @@ namespace Ponto_TI.scripts
         {
             try
             {
-                connection.Open();
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                if (connection.State == ConnectionState.Closed)
                 {
-                    EscreveLog(DateTime.Now.ToString() + " - " + "Conexão efetuada com sucesso!", w);
-                }
+                    connection.Open();
+                    using (StreamWriter w = File.AppendText("E:\\log.txt"))
+                    {
+                        EscreveLog(DateTime.Now.ToString() + " - " + "Conexão efetuada com sucesso!", w);
+                    }
+                }                
                 return true;
             }
             catch (SqlException ex)
@@ -73,26 +76,26 @@ namespace Ponto_TI.scripts
                 switch (ex.ErrorCode)
                 {
                     case 0:
-                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        using (StreamWriter w = File.AppendText("E:\\log.txt"))
                         {
                             EscreveLog(DateTime.Now.ToString() + " - " + "Falha ao conectar o servidor, contate o administrador!", w);
                         }                        
                         break;
 
                     case 1045:
-                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        using (StreamWriter w = File.AppendText("E:\\log.txt"))
                         {
                             EscreveLog(DateTime.Now.ToString() + " - " + "Usuário ou Senha Inválidos!", w);
                         }                
                         break;
                     case 4060:
-                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        using (StreamWriter w = File.AppendText("E:\\log.txt"))
                         {
                             EscreveLog(DateTime.Now.ToString() + " - " + "O usuário não possui permissão de acesso à base de dados especificada!", w);
                         }
                         break;
                     case 40532:
-                        using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                        using (StreamWriter w = File.AppendText("E:\\log.txt"))
                         {
                             EscreveLog(DateTime.Now.ToString() + " - " + "Não foi possível conectar ao servidor com o login especificado!", w);
                         }
@@ -108,7 +111,7 @@ namespace Ponto_TI.scripts
             try
             {
                 connection.Close();
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Conexão finalizada com sucesso!", w);
                 }                
@@ -116,7 +119,7 @@ namespace Ponto_TI.scripts
             }
             catch (SqlException ex)
             {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao encerrar conexão!", w);
                     EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
@@ -153,7 +156,7 @@ namespace Ponto_TI.scripts
                     if (ContColab == 1)
                     {
                         MsgRetorno = "CPF CADASTRADO";
-                        Valor = SQL_DT.Rows[0]["colab_id"].ToString();                        
+                        Valor = SQL_DT.Rows[0]["id_colab"].ToString();                        
                     }
                     else if (ContColab == 0)
                     {
@@ -168,7 +171,7 @@ namespace Ponto_TI.scripts
             }
             catch (Exception ex)
             {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar Select na tabela tbl_colab", w);
                     EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
@@ -208,8 +211,8 @@ namespace Ponto_TI.scripts
                     }
                     else
                     {
-                        strIdUsuario = Convert.ToString(DtLogin.Rows[0]["login_id"]);
-                        strIdGrupoUsuario = Convert.ToString(DtLogin.Rows[0]["login_grupo"]);
+                        strIdUsuario = Convert.ToString(DtLogin.Rows[0]["id_colab"]);
+                        strIdGrupoUsuario = Convert.ToString(DtLogin.Rows[0]["grplogin_colab"]);
                         StatusLogin = "Sucesso";
                         DtLogin.Clear();                        
                     }
@@ -223,9 +226,60 @@ namespace Ponto_TI.scripts
             }
             catch (Exception ex)
             {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar Select na tabela tbl_login", w);
+                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
+                }
+            }
+        }
+
+        //Verifica se o ponto vai ser registrado mais de uma vez com a mesma ação
+        public void SelectPonto(string cpf, int acao, int id_colab, int cod_acao, string ipHost)
+        {
+            try
+            {
+                //String para pesquisa
+                string query = "SELECT DISTINCT id_colab_ponto FROM tbl_ponto AS a inner join tbl_colab as b  on b.id_colab = a.id_colab_ponto WHERE b.cpf_colab = '" + cpf + "' and a.data_ponto >= '" + DateTime.Today.ToString("d")+ "' and a.id_acao_ponto='" + acao + "'";
+
+                //Criando Lista para Armazenar os Dados do Select
+                List<string>[] Lista = new List<string>[1];
+                Lista[0] = new List<string>();
+
+                if (this.AbreConexao() == true)
+                {
+                    ContPonto = 0;
+                    //Cria Comando
+                    SqlCommand cmd = new SqlCommand(query, connection);
+
+                    //Criando o data Reader
+                    SqlDataReader SQL_DR = cmd.ExecuteReader();
+                    DataTable SQL_DT = new DataTable();
+                    SQL_DT.Load(SQL_DR);
+
+                    ContPonto = SQL_DT.Rows.Count;
+
+
+                    if (ContPonto == 1)
+                    {
+                        MsgRetorno = "Ponto já registrado";
+                    }
+                    else
+                    {
+                        InserePonto(id_colab, cod_acao, ipHost);
+                    }
+                    //Fecha Data Reader
+                    SQL_DR.Close();
+
+                    //Fecha Conexão com Banco de Dados
+                    this.FechaConexao();
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
+                {
+                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar Select na tabela tbl_colab", w);
                     EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
                 }
             }
@@ -234,7 +288,7 @@ namespace Ponto_TI.scripts
         //Insere Ponto
         public void InserePonto( int id_colab, int cod_acao, string ipHost)
         {
-            string query = "INSERT INTO tbl_regponto VALUES(" + id_colab + ", SysDate, " + cod_acao + ",'"+ ipHost +"')";
+            string query = "INSERT INTO tbl_ponto VALUES(" + id_colab + ", '" + DateTime.Now.ToString() + "', " + cod_acao + ",'"+ ipHost +"')";
             
             try
             {
@@ -248,11 +302,13 @@ namespace Ponto_TI.scripts
 
                     //Fecha Conexão
                     this.FechaConexao();
+
+                    MsgRetorno = "Ponto registrado com sucesso";
                 }
             }
             catch (Exception ex)
             {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao realizar insert na tabela de ponto", w);
                     EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
@@ -262,7 +318,7 @@ namespace Ponto_TI.scripts
         }
 
         //Insere Colaborador
-        public void InsereColab(string ColabNome, string ColabCPF)
+        public void InsereColab(string ColabNome, string ColabCPF, string usr_colab, string psw_colab, int grplogin, int status_colab, int regional_colab)
         {
             try
             {
@@ -270,7 +326,7 @@ namespace Ponto_TI.scripts
                 
                 if (StatusCPF == true)
                 {
-                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                    using (StreamWriter w = File.AppendText("E:\\log.txt"))
                     {
                         EscreveLog(DateTime.Now.ToString() + " - " + "Status do CPF = " + StatusCPF, w);
                     }
@@ -279,8 +335,8 @@ namespace Ponto_TI.scripts
                     if (MsgRetorno == "CPF NAO CADASTRADO")
 
                         if (this.AbreConexao() == true)
-                        {
-                            string query = "INSERT INTO TBL_COLAB (COLAB_NOME, COLAB_CPF) VALUES('" + ColabNome.Trim() + "','" + ColabCPF.Trim() + "')";
+                        {                            
+                            string query = "INSERT INTO TBL_COLAB ([usr_colab],[psw_colab],[grplogin_colab],[nome_colab],[cpf_colab],[status_colab],[regional_colab]) VALUES('" + usr_colab +"', '"+ psw_colab +"', " + grplogin + ", '" + ColabNome.Trim() + "','" + ColabCPF.Trim() + "', "+ status_colab + ", " + regional_colab + ")";
 
                             //Executa a query definida na variável "query" definida acima
                             SqlCommand cmd = new SqlCommand(query, connection);
@@ -294,7 +350,7 @@ namespace Ponto_TI.scripts
                 }
                 else
                 {
-                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                    using (StreamWriter w = File.AppendText("E:\\log.txt"))
                     {
                         EscreveLog(DateTime.Now.ToString() + " - " + "Status do CPF = " + StatusCPF, w);
                     }
@@ -302,56 +358,14 @@ namespace Ponto_TI.scripts
             }
             catch (Exception ex)
             {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
+                using (StreamWriter w = File.AppendText("E:\\log.txt"))
                 {
                     EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao inserir colaborador", w);
                     EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
                 }
                 throw;
             }
-        }
-
-        //Insere Login
-        public void InsereLogin(string LoginUser, string LoginSenha, int LoginGrupo, string LoginCPF)
-        {
-            try
-            {
-                string query = "INSERT INTO TBL_LOGIN (LOGIN_USERNAME, LOGIN_SENHA, LOGIN_STATUS, LOGIN_GRUPO, LOGIN_COLAB_ID) VALUES('" + LoginUser.Trim() + "','" + LoginSenha.Trim() + "'," + 1 + "," + LoginGrupo +", (SELECT COLAB_ID FROM TBL_COLAB WHERE COLAB_CPF='" + LoginCPF.Trim() + "'))";
-                
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
-                {
-                    EscreveLog(DateTime.Now.ToString() + " - " + "Salvando o login" + LoginUser + "no banco de dados", w);
-                }
-
-                if (this.AbreConexao() == true)
-                {
-                    //Executa a query definida na variável "query" definida acima
-                    SqlCommand cmd = new SqlCommand(query, connection);
-
-                    //Executa comando
-                    cmd.ExecuteNonQuery();
-
-                    //Fecha Conexão
-                    this.FechaConexao();
-                }                
-                else
-                {
-                    using (StreamWriter w = File.AppendText("D:\\log.txt"))
-                    {
-                        EscreveLog(DateTime.Now.ToString() + " - " + "A conexão com o banco de dados não está aberta", w);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                using (StreamWriter w = File.AppendText("D:\\log.txt"))
-                {
-                    EscreveLog(DateTime.Now.ToString() + " - " + "Erro ao inserir colaborador", w);
-                    EscreveLog(DateTime.Now.ToString() + " - " + ex.Message, w);
-                }
-                throw;
-            }
-        }
+        }        
 
         //Update statement
         public void Update()

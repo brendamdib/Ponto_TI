@@ -30,12 +30,12 @@ namespace Ponto_TI
             if (scripts.Funcoes.IsCpf(cpf))
             {   
                 scripts.Funcoes scpFuncoes = new scripts.Funcoes();
-                scpFuncoes.Conecta_Oracle();
+                scpFuncoes.Conecta_SQL();
                 scpFuncoes.SelectCPF(cpf);
                 //Response.Write(Conecta.Valor.ToString());
                 server = Dns.GetHostName();
 
-                ip = (Dns.GetHostByName(server)).AddressList[1].ToString();
+                ip = (Dns.GetHostByName(server)).AddressList[0].ToString();
 
                 if (scpFuncoes.Valor.ToString() == "Erro")
                 {
@@ -45,12 +45,18 @@ namespace Ponto_TI
                 {
                     codColab = Int32.Parse(scpFuncoes.Valor);
                     acao = Int32.Parse(rdo_acao.SelectedValue.ToString());
-                   
-                    scpFuncoes.InserePonto(codColab, acao, ip);
 
-                    btn_submit.Enabled = false;
-
-                    lbl_mensagem.Text = "Lançamento efetuado com sucesso";
+                    scpFuncoes.SelectPonto(txt_cpf.Text, acao, codColab, acao, ip);
+                    
+                    if(scpFuncoes.MsgRetorno == "Ponto registrado com sucesso")
+                    {
+                        lbl_mensagem.Text = "Lançamento efetuado com sucesso";
+                        btn_submit.Enabled = false;
+                    }
+                    else
+                    {
+                        lbl_mensagem.Text = "Ponto já lançado anteriormente";
+                    }
                 }                
             }
             else
